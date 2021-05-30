@@ -65,7 +65,7 @@ typedef __default_alloc_template<__NODE_ALLOCATOR_THREAD, 0> alloc;		    // 第�
 
 # endif  /*__USE_MALLOC*/
 /*
-	alloc 不接受任何template类型参数	
+	alloc 不接受任何template型别参数	
 */
 ```
 
@@ -158,4 +158,150 @@ static void* allcoate(size_t n)						// n > 0
 ### 重新填充fill lists
 
 ![内存池配置](%E5%86%85%E5%AD%98%E6%B1%A0%5B%E9%85%8D%E7%BD%AE.jpg)
+
+
+
+## 内存基本处理工具
+
+STL的五个全局函数有：
+
+1. construct()
+
+2. destroy()
+
+3. uninitialized_copy()
+
+4. uninitialized_fill()
+
+   同 5.
+
+   针对 **char*** 和 **wchar_t***   两种类型， 可以使用最有效率的做法memove（直接移动内存内容）来完成复制内容
+
+   ```c++
+   // uninitialized_copy()针对 char* 和 wchar_t* 的特化版本
+   inline char* uninitialized_copy(const char* first, const char* last, char* result)
+   {
+       memove(result, first, last - first);
+       return result + (last - first);
+   }
+   
+   inline wchar_t* uninitialized_copy(const wchar_t * first, const wchar_t * last, wchar_t * result)
+   {
+       memove(result, first, sizeof(wchar_t) * (last - first));
+       return result + (last - first);     // ? 没有 sizeof
+   }
+   ```
+
+5. uninitialized_fill_n()
+
+   ```c++
+   // 这个函数的进行逻辑：萃取迭代器first的value type，判断该型别是否为POD型别。（POD， 标量类型或者传统的C结构类型）
+   template <class ForwardIterator, class Size, class T>
+   inline ForwardIterator uninitialized_fill_n(ForwardIterator first, Size n, const T& x)
+   {
+       return __uninitialized_fill_n(first, n, x , value_type(first));
+   }
+   
+   template <class ForwardIterator, class Size, class T, class T1>
+   inline ForwardIterator __uninitialized_fill_n(ForwardIterator first, Size n, const T& x, T1*)
+   {
+       typedef typename __type_traits<T1>::is_POD_type is_POD;
+       return __uninitialized_fill_n_aux(first, n, x, is_POD());
+   }
+   
+   // 如果是 copy construction 等同于 assignment， 而且
+   // destructor 是 trivial, 以下就有效
+   // 如果是 POD 型别， 执行流程就会转进到以下函数
+   // 这是由 function template 的参数推导机制而得(?)
+   template <class ForwardIterator, class Size, class T>
+   inline ForwardIterator ininitialized_fill_n(ForwardIterator first, Size n, const T& x)
+   {
+       __uninitializaed_fill_n_aux(ForwardIterator first, Size n, const T& x, __true_type)
+       {
+           return fill_n(first, n, x);
+       }
+   }
+   
+   // 如果不是 POD 型别， 执行流程就会转进到以下函数
+   // 这是由 function template 的参数推导机制而得(?)
+   template <class ForwardIterator, class Size, class T>
+   ForwardIterator __uninitialized_fill_n_zux(ForwardIterator first, Size n, const T& x, __false_type)
+   {
+       ForwardIterator cur = first;
+       for ( ; n > 0; --n, ++cur)  
+           construct(&*cur, x);		// 只能一个一个构造， 不能批量进行
+       return cur;
+   }
+   ```
+
+   # 迭代器概念 与 traits 编程技法
+
+   
+
+   ## 迭代器 >= smart pointer
+
+   一般情况下为了避免过多的暴露容器细节，会把迭代器也交由容器的设计者来实现。
+
+   
+
+   ## 迭代器相应型别
+
+   利用 function template 的参数推导机制， 例如
+
+   ```c++
+   template <class I, class T>
+   void func_impl(I iter, T t)
+   {
+       T tmp;
+       // ... 这里完成func（） 应该做的全部工作
+   }
+   
+   template <class I>
+   inline void func(I iter)
+   {
+       func_impl(iter, *iter);
+   }
+   
+   int main() {
+       int i;
+        func(&i);
+   }
+   ```
+
+   ## Traits 编程技法
+
+   上述技巧有限，如果 value type 必须用于函数的传回值，它就失效了。
+
+   声明内嵌型别可以解决这个问题。
+
+   ```c++
+   template <class T>
+   struct MyIter
+   {
+       typedef T value_type;
+       T* ptr;
+       MyIter(T* p=0) : ptr(p) {}
+       T& operator* () const { return *ptr; }
+   };
+   
+   template <class I>
+   typename I::value_type func( I iter)
+   {
+       return *iter;
+   }
+   
+   
+   
+   int main() {
+       // ...
+       MyIter<int> iter(new int(8));
+       cout << func(iter);
+   }
+   ```
+
+    func()的回返类型必须加上关键词typename，因为T是一个template参数，在他被编译器具现化之前，编译器对T一无所知，也就是说，编译器不知道 MyIter<T>::value_type代表的是一个型别还是一个member function 还是一个 data member。
+
+   
+
+
 
