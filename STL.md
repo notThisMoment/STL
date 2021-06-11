@@ -301,7 +301,130 @@ STL的五个全局函数有：
 
     func()的回返类型必须加上关键词typename，因为T是一个template参数，在他被编译器具现化之前，编译器对T一无所知，也就是说，编译器不知道 MyIter<T>::value_type代表的是一个型别还是一个member function 还是一个 data member。
 
+   但是这里有个隐晦的陷阱：并不是所有迭代器都是 class type。比如原声指针。如果不是 class type,就不能定义内嵌型别。
    
-
-
+   针对这种情况，使用 **偏特化**。
+   
+   其实这里偏特化的作用就是特性萃取器。
+   
+   ![image-20210611145304450](image-20210611145304450.png)
+   
+   
+   
+   ```c++
+   // 偏特化
+   template <class T>
+   struct iterator_traits<T*>
+   {
+       typedef T value_type;
+   };
+   
+   template <class I>
+   typename iterator_traits<I>::value_type
+   func(I ite)
+   { return *ite; }
+   ```
+   
+   注意，对const I 类型的同样要另起偏特化的函数。
+   
+   STL里面定义如下：
+   
+   ```C++
+   template<typename _Tp>
+     struct iterator_traits<_Tp*>
+     {
+       typedef random_access_iterator_tag iterator_category;
+       typedef _Tp                         value_type;
+       typedef ptrdiff_t                   difference_type;
+       typedef _Tp*                        pointer;
+       typedef _Tp&                        reference;
+     };
+   ```
+   
+   ### difference type
+   
+   difference type用于表示两个迭代器之间的距离。
+   
+   使用方式：
+   
+   ```c++
+   typename iterator_traits<I>::value_type
+   ```
+   
+   ### reference type
+   
+   ### pointer type
+   
+   ### iterator_category
+   
+   其实就是迭代器的前进和后退。
+   
+   以 advance() 为例
+   
+   设计如下：如果 traits 有能力萃取出迭代器的种类，我们可以利用这个“迭代器类型”相应型别作为 advanced()的第三参数。这个相应型别必须是一个class type，不能只是数值号码之类的东西（因为编译器要使用traits并仰赖它（一个型别））来进行重载决议。
+   
+   
+   
+   ```c++
+   // 五个作为标记使用的型别（tag types)
+   struct input_iterator_tag {};
+   struct output_iterator_tag {};
+   struct forward_iterator_tag : public input_iterator_tag {};
+   struct bidirectional_iterator_tag : public forward_iterator_tag {};
+   struct random_access_iterator_tag : public bidirectional_iterator_tag {};
+   
+   template <class ForwardIterator, class Distance>
+   inline void __advance(ForwardIterator& i, Distance n,
+                         input_iterator_tag)
+   {
+       while (n--) ++i;
+   }
+   
+   template <class ForwardIterator, class Distance>
+   inline void __advance(ForwardIterator& i, Distance n,
+                         forward_iterator_tag)
+   {
+       advance(i, n, input_iterator_tag());
+   }
+   
+   template <class BidiectionIterator, class Distance>
+   inline void __advance(BidiectionIterator& i, Distance n,
+                         bidirectional_iterator_tag)
+   {
+       // 双向， 逐一前进
+       if (n >= 0)
+           while (n--) ++i;
+       else
+           while (n++) --i;
+   }
+   
+   template <class RandomAccessIterator, class Distance>
+   inline void __advance(RandomAccessIterator& i, Distance n,
+                         random_access_iterator_tag)
+   {
+       // 双向， 跳跃前进
+       i += n;
+   }
+   
+   /*
+    * 注意上述语法， 每个__advance() 的最后一个参数都只声明型别，并未指定参数名称，
+    * 因为它纯粹用来激活重载机制，函数中根本不会使用到该参数。
+    * */
+   
+   // 下面是一个对外开放的上层控制接口，调用上述各个重载的__advance()
+   template <class InputIterator, class Distance>
+   inline void advance(InputIterator& i, Distance n)
+   {
+       __advance(i, n, 
+                 iterator_traits<InputIterator>::iterator_category());
+   }
+   ```
+   
+   
+   
+   ## std::iterator 的保证
+   
+   STL 提供了一个 iterators class 。如果每个新设计的迭代器都继承自它，就可保证STL所需要的规范。
+   
+   
 
