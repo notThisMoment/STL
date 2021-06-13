@@ -483,3 +483,9 @@ merge(), reverse(), sort() 都是经由 transfer() 实现的。
 >list 不能使用 STL算法 sort() ， 必须使用自己的 sort() member function。因为STL算法 sort() 只接受 
 >
 >RamdonAccessIterator。本函数使用的是quick sort。（但是源码看起来更像是归并排序）
+
+## deque
+
+deque是双向开口的连续线性空间。
+
+除非必要，尽可能使用vector而不是deque，对 deque 进行的排序操作，为了提高效率，可将 deque 先完整复制到一个 vector 身上， 将 vector 排序后 ， 再复制回 deque。
