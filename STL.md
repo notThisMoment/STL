@@ -426,5 +426,60 @@ STL的五个全局函数有：
    
    STL 提供了一个 iterators class 。如果每个新设计的迭代器都继承自它，就可保证STL所需要的规范。
    
+   # 序列式容器
    
+   ## 容器分类
+   
+   ### 序列式容器
+   
+   序列式容器指的是元素都可序，但未必有序。
+   
+   ## vector
+   
+   vector是动态空间，随着元素的加入，其内部机制会自动扩充空间来容纳新元素。
+   
+   vector的实现，关键在于**对大小的控制**和**重新配置时数据移动的效率**。
+   
+   ### vector的数据结构
+   
+   vector的数据结构：线性连续空间。
+   
+   所谓动态增加大小，是以原大小的两倍另外配置一块较大空间，然后将原内容拷贝过来，然后才在原内容之后构造新元素并且**释放原空间**。
+   
+   **对vector的所有操作，一旦引起空间重新配置，指向原vector的所有迭代器就都失效了。**
+   
+   ### 操作：pop_back,erase,clear,insert
+   
+   inert图示：
+   
+   ![image-20210613113438911](image-20210613113438911.png)
+   ![image-20210613113508886](image-20210613113508886.png)
+   ![image-20210613113700479](image-20210613113700479.png)
+   
+   ## list
+   
+   list的insert和splice操作都不会造成原有的list迭代器失效。
+   
+   list其实是一个环状双向链表。
 
+![image-20210613155733732](image-20210613155733732.png)
+
+### constructor, push_back, insert
+
+list提供有很多 constructor，其中一个是 default constructor，允许我们不指定任何参数作出一个空的list出来。
+
+当我们使用 push_back() 将新元素插入于 list 尾端时，此函数内部调用 insert()：
+
+```c++
+void push_back(const T& x) { insert(end(), x); }
+```
+
+list 内部提供一个所谓的迁移操作（transfer)：将某连续范围的元素迁移到某个特定位置之前。
+
+![image-20210613170211838](image-20210613170211838.png)
+
+merge(), reverse(), sort() 都是经由 transfer() 实现的。
+
+>list 不能使用 STL算法 sort() ， 必须使用自己的 sort() member function。因为STL算法 sort() 只接受 
+>
+>RamdonAccessIterator。本函数使用的是quick sort。（但是源码看起来更像是归并排序）
