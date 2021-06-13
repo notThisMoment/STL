@@ -489,3 +489,13 @@ merge(), reverse(), sort() 都是经由 transfer() 实现的。
 deque是双向开口的连续线性空间。
 
 除非必要，尽可能使用vector而不是deque，对 deque 进行的排序操作，为了提高效率，可将 deque 先完整复制到一个 vector 身上， 将 vector 排序后 ， 再复制回 deque。
+
+deque 是 RandomAccessIteartor
+
+### deque 的中控器
+
+deque采用一块所谓的 map（不是STL的map容器）作为主控。这里所谓的map是一小块连续空间。其中每一个元素都是指针，指向另一段（较大的）连续线性空间，称为缓冲区。缓冲区才是 deque 的储存空间主体。
+
+### deque的迭代器
+
+![image-20210613231740496](image-20210613231740496.png) 
