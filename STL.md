@@ -499,3 +499,23 @@ deque采用一块所谓的 map（不是STL的map容器）作为主控。这里�
 ### deque的迭代器
 
 ![image-20210613231740496](image-20210613231740496.png) 
+
+deque的map的start的node一般在map的中间位置。
+
+整个map有一个 start(iterator) 和 finish(iterator)。
+
+reverse_map_at_back() 和 reverse_map_at_front()判断 map 需要重新整治。
+
+### deque的元素操作
+
+clear()用来清楚整个deque。但是，deque的最初状态（无任何元素的时候）也保有一个缓冲区。
+
+## stack
+
+使用 deque 实现 stack
+
+由于stack是以底部容器完成其所有工作，而具有这种“修改某物接口，形成另一种风貌”的性质的东西，称为 **配接器**
+
+stack只有顶端的元素才会被外界取用。stack不提供走访功能，因此也不提供迭代器。
+
+stack 可以使用 deque 和 list 作为底部容器。
