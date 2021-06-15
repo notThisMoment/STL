@@ -510,12 +510,31 @@ reverse_map_at_back() 和 reverse_map_at_front()判断 map 需要重新整治。
 
 clear()用来清楚整个deque。但是，deque的最初状态（无任何元素的时候）也保有一个缓冲区。
 
-## stack
-
-使用 deque 实现 stack
+## stack， queue
 
 由于stack是以底部容器完成其所有工作，而具有这种“修改某物接口，形成另一种风貌”的性质的东西，称为 **配接器**
 
-stack只有顶端的元素才会被外界取用。stack不提供走访功能，因此也不提供迭代器。
+stack，queue 只有顶端的元素才会被外界取用。stack，queue 不提供走访功能，因此也不提供迭代器。
 
-stack 可以使用 deque 和 list 作为底部容器。
+stack，queue 可以使用 deque 和 list 作为底部容器。
+
+##  heap
+
+heap其实就是一个完全二叉树。heap也没有迭代器
+
+## priority_queue
+
+作为一种配接器，priority_queue也没有迭代器。
+
+## slist
+
+slist的end（）其实就是一个 Iterator(0)。
+
+# 关联式容器
+
+标准的 STL 关联式容器分为 set 和 map 两大类，以及这两大类的衍生体 multiset 和 multimap。这些容器的底层机制均以 RB-tree 完成。
+
+## 
+
+
+
