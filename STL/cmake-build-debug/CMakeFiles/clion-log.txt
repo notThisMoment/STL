@@ -1,0 +1,4 @@
+/home/lai/clion-2021.1.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/lai/bookmark/STL/STL
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/lai/bookmark/STL/STL/cmake-build-debug
