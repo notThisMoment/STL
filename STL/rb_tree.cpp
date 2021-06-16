@@ -57,19 +57,20 @@ struct __rb_tree_base_iterator
 
     void increment()
     {
-        if (node->right != 0)       // 如果有右子节点。状况（1）
+        if (node->right != 0)           // 如果有右子节点。状况（1）
         {
-            node = node->right;     // 就向右走
-            while (node->left != 0) // 然后一直往左子树走到底
-                node = node->left;  // 就是结果
+            node = node->right;         // 就向右走
+            while (node->left != 0)     // 然后一直往左子树走到底
+                node = node->left;      // 就是结果
         }
-        else                        // 没有右子节点。状况（2）
+        else                                // 没有右子节点。状况（2）
         {
-            base_ptr y = node->parent;
-            while (node == y->right)
+            base_ptr y = node->parent;      // 找出父节点
+            while (node == y->right)        // 如果现行节点本身是个右节点
             {
-                node = y;
-                y = y->parent;
+
+                node = y;                   // 如果现行节点本身是个右子节点
+                y = y->parent;              // 就一直上溯，直到“不为右子节点”为止
             }
         }
     }
