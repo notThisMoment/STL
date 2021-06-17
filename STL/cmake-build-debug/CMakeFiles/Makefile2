@@ -93,12 +93,12 @@ clean: CMakeFiles/STL.dir/clean
 CMakeFiles/STL.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles --progress-num=1,2,3 "Built target STL"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4 "Built target STL"
 .PHONY : CMakeFiles/STL.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/STL.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles 3
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles 4
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/STL.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/STL.dir/rule

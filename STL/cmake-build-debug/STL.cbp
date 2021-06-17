@@ -82,6 +82,12 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/home/lai/bookmark/STL/STL/Alloc.cpp">
+			<Option target="STL"/>
+		</Unit>
+		<Unit filename="/home/lai/bookmark/STL/STL/Alloc.h">
+			<Option target="STL"/>
+		</Unit>
 		<Unit filename="/home/lai/bookmark/STL/STL/main.cpp">
 			<Option target="STL"/>
 		</Unit>

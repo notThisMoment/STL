@@ -1,0 +1,16 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/lai/bookmark/STL/STL/rb_tree.cpp
+rb_tree.h
+/home/lai/bookmark/STL/STL/rb_tree.h
+cstddef
+-
+
+/home/lai/bookmark/STL/STL/rb_tree.h
+

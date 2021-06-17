@@ -142,6 +142,33 @@ STL/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/build
 .PHONY : STL/fast
 
+Alloc.o: Alloc.cpp.o
+
+.PHONY : Alloc.o
+
+# target to build an object file
+Alloc.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/Alloc.cpp.o
+.PHONY : Alloc.cpp.o
+
+Alloc.i: Alloc.cpp.i
+
+.PHONY : Alloc.i
+
+# target to preprocess a source file
+Alloc.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/Alloc.cpp.i
+.PHONY : Alloc.cpp.i
+
+Alloc.s: Alloc.cpp.s
+
+.PHONY : Alloc.s
+
+# target to generate assembly for a file
+Alloc.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/STL.dir/build.make CMakeFiles/STL.dir/Alloc.cpp.s
+.PHONY : Alloc.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -205,6 +232,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... STL"
+	@echo "... Alloc.o"
+	@echo "... Alloc.i"
+	@echo "... Alloc.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

@@ -4,6 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/lai/bookmark/STL/STL/Alloc.cpp" "/home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles/STL.dir/Alloc.cpp.o"
   "/home/lai/bookmark/STL/STL/main.cpp" "/home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles/STL.dir/main.cpp.o"
   "/home/lai/bookmark/STL/STL/rb_tree.cpp" "/home/lai/bookmark/STL/STL/cmake-build-debug/CMakeFiles/STL.dir/rb_tree.cpp.o"
   )

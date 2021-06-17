@@ -3,6 +3,7 @@
 //
 
 #include "rb_tree.h"
+#include "Alloc.h"
 #include <cstddef>
 
 typedef bool __rb_tree_color_type;
@@ -34,7 +35,7 @@ struct __rb_tree_node_base
 };
 
 template <class Value>
-struct __rb_tree_node : public _-__rb_tree_node_base
+struct __rb_tree_node : public __rb_tree_node_base
 {
     typedef __rb_tree_node<Value>* link_type;
     Value value_field;      // 节点值
@@ -72,6 +73,113 @@ struct __rb_tree_base_iterator
                 node = y;                   // 如果现行节点本身是个右子节点
                 y = y->parent;              // 就一直上溯，直到“不为右子节点”为止
             }
+            if (node->right != y)           // 若此时的右子节点不等于此时的父节点
+                node = y;                   // 状况（3），此时的父节点就是解答
+                /*
+                 * 这里的 “若此时的右子节点不等于此时的父节点” 为了应付一种特殊情况。
+                 * 别深究，后面会补充
+                 * */
         }
+    }
+
+    void decrement()
+    {
+        if (node->color == __rb_tree_red &&         // 如果是红节点，且
+            node->parent->parent == node)           // 父节点的父节点等于自己（？）
+            node = node -> right;                   // 状况（1）右子节点就是解答（？）
+        // 以上情况发生于 node 为 header时（也就是node 为 end（）时）（？）
+        else if (node->left != 0)                   // 如果有左子节点。状况（2）
+        {
+            base_ptr y = node->left;                // 令 y 指向左子节点
+            while (y->right != 0)                   // 当 y 有右子节点时
+                y = y->right;                       // 一直往右子节点走到底
+            node = y;                               // 最后就是答案
+        }
+        else                                        // 既不是根节点， 也没有左子节点
+        {
+            base_ptr y = node->parent;              // 状况（3）找出父节点
+            while (node == y->left)                 // 当现行节点身为左子节点
+            {
+                node = y;                           // 一直交替往上走，直到现行节点不是左子节点。
+                y = y->parent;
+            }
+            node = y;                               // 此时的父节点就是答案
+        }
+    }
+};
+
+// RB-tree 的正规迭代器
+template <class Value, class Ref, class Ptr>
+struct __rb_tree_iterator : public __rb_tree_base_iterator
+{
+    typedef Value value_type;
+    typedef Ref reference;
+    typedef Ptr pointer;
+    typedef __rb_tree_iterator<Value, Value&, Value*>   iterator;
+    typedef __rb_tree_iterator<Value, const Value&, const Value*>   const_iterator;
+    typedef __rb_tree_iterator<Value, Ref, Ptr> self;
+    typedef __rb_tree_node<Value>*  link_type;
+
+
+    __rb_tree_iterator() {}
+    __rb_tree_iterator(link_type x) { node = x; }
+    __rb_tree_iterator(const iterator& it)   { node = it.node; }
+
+    reference operator*() const { return link_type(node)->value_field; }
+
+# ifndef __SGI_STL_NO_ARROW_FPERATOR
+    pointer operator->() const { return &(operator*()); }
+# endif
+
+    self& operator++()
+    {
+        increment();
+        return *this;
+    }
+
+    self operator++(int)
+    {
+        self tmp = *this;
+        increment();
+        return tmp;
+    }
+
+    self& operator--()
+    {
+        decrement();
+        return *this;
+    }
+    self operator--(int) {
+        self tmp = *this;
+        decrement();
+        return tmp;
+    }
+};
+
+template <class Key, class Value, class KeyOfValue, class Compare, class Alloc = alloc>
+class rb_tree{
+protected:
+    typedef void* void_pointer;
+    typedef __rb_tree_node_base* base_ptr;
+    typedef __rb_tree_node<Value> rb_tree_node;
+    typedef simple_alloc<rb_tree_node, Alloc>   rb_tree_node_allocator;
+    typedef __rb_tree_color_type color;
+public:
+    typedef Key key_value;
+    typedef Value value_type;
+    typedef const value_type* const_pointer;
+    typedef value_type& reference;
+    typedef const value_type & const_reference;
+    typedef rb_tree_node * link_type;
+    typedef size_t size_type;
+    typedef ptrdiff_t difference_type;
+protected:
+    link_type get_node() { return rb_tree_node_allocator::allocate(); }
+    void put_node(link_type p) { return rb_tree_node_allocator::deallocate(p); }
+
+    link_type create_node(const value_type& x)
+    {
+        link_type tmp = get_node();         // 配置空间
+        
     }
 };

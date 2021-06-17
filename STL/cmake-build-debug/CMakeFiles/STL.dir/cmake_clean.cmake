@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/STL.dir/Alloc.cpp.o"
   "CMakeFiles/STL.dir/main.cpp.o"
   "CMakeFiles/STL.dir/rb_tree.cpp.o"
   "STL"
